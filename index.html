@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedStat Lab — Medical Data Analysis Toolkit</title>
+  <meta name="description" content="Client-side medical statistics and data analysis toolkit.">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.3/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jstat@1.9.6/dist/jstat.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">+</div><div><strong>MedStat</strong><span>LAB</span></div></div>
+    <div class="project">
+      <small>PROJECT</small><b id="projectName">Untitled dataset</b>
+      <span id="dataStatus" class="status">No data</span>
+    </div>
+    <nav id="nav">
+      <button class="nav-item active" data-page="dashboard">⌂ <span>Dashboard</span></button>
+      <button class="nav-item" data-page="import">↥ <span>Data Import</span></button>
+      <button class="nav-item" data-page="dictionary">▤ <span>Data Dictionary</span></button>
+      <button class="nav-item" data-page="cleaning">✦ <span>Cleaning</span></button>
+      <button class="nav-item" data-page="validation">✓ <span>Validation</span></button>
+      <button class="nav-item" data-page="descriptive">Σ <span>Descriptive</span></button>
+      <button class="nav-item" data-page="normality">∿ <span>Normality</span></button>
+      <button class="nav-item" data-page="categorical">□ <span>Categorical</span></button>
+      <button class="nav-item" data-page="continuous">μ <span>Continuous</span></button>
+      <button class="nav-item" data-page="correlation">↗ <span>Correlation</span></button>
+      <button class="nav-item" data-page="linear">β <span>Linear Regression</span></button>
+      <button class="nav-item" data-page="logistic">OR <span>Logistic Regression</span></button>
+      <button class="nav-item" data-page="poisson">IRR <span>Poisson</span></button>
+      <button class="nav-item" data-page="survival">KM <span>Survival</span></button>
+      <button class="nav-item" data-page="diagnostic">ROC <span>Diagnostic</span></button>
+      <button class="nav-item" data-page="report">⇩ <span>Report & Export</span></button>
+    </nav>
+    <div class="sidebar-foot">Runs in your browser<br><span>No server upload required</span></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div><button id="mobileMenu" class="icon-btn">☰</button><span class="crumb">Medical Statistics / </span><b id="pageTitle">Dashboard</b></div>
+      <div class="top-actions"><button class="ghost" id="clearBtn">Clear data</button><button class="primary" id="exportBtn">Export report</button></div>
+    </header>
+
+    <section id="pages">
+      <div class="page active" id="page-dashboard">
+        <div class="hero"><div><p class="eyebrow">MEDICAL DATA ANALYSIS</p><h1>Analyze your clinical dataset.</h1><p class="muted">Import CSV/Excel data, inspect quality, run common medical statistics, visualize results, and export a report.</p><button class="primary big" data-goto="import">Start with your data →</button></div><div class="hero-card"><div class="pulse">+</div><b>15 analysis modules</b><span>Descriptive → regression → survival → diagnostic accuracy</span></div></div>
+        <div class="cards four">
+          <div class="metric"><span>Rows</span><b id="mRows">0</b></div><div class="metric"><span>Variables</span><b id="mCols">0</b></div><div class="metric"><span>Missing cells</span><b id="mMissing">0</b></div><div class="metric"><span>Duplicate rows</span><b id="mDup">0</b></div>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h2>Analysis workflow</h2><p class="muted">Recommended order for most medical datasets</p></div></div><div class="workflow"><span>01 Import</span><i>→</i><span>02 Clean</span><i>→</i><span>03 Describe</span><i>→</i><span>04 Test</span><i>→</i><span>05 Model</span><i>→</i><span>06 Report</span></div></div>
+      </div>
+
+      <div class="page" id="page-import">
+        <div class="page-head"><div><p class="eyebrow">01 / DATA IMPORT</p><h1>Bring in your dataset</h1><p class="muted">CSV, XLSX and XLS are supported. Data stay in this browser session.</p></div></div>
+        <div class="upload" id="dropzone"><div class="upload-icon">↥</div><h2>Drop CSV or Excel here</h2><p>or choose a file from your device</p><input id="fileInput" type="file" accept=".csv,.xlsx,.xls"></div>
+        <div class="panel"><div class="panel-head"><h2>Data preview</h2><span id="previewInfo" class="muted">No dataset loaded</span></div><div class="table-wrap"><table id="previewTable"></table></div></div>
+      </div>
+
+      <div class="page" id="page-dictionary"><PagePlaceholder title="02 / DATA DICTIONARY" heading="Understand every variable" text="Automatically detect variable types, unique values, missingness, and example values." /></div>
+      <div class="page" id="page-cleaning"><PagePlaceholder title="03 / DATA CLEANING" heading="Clean without losing your raw data" text="Create a cleaned working copy, remove duplicate rows, trim text, and handle missing values." /></div>
+      <div class="page" id="page-validation"><PagePlaceholder title="04 / DATA VALIDATION" heading="Check data quality" text="Find out-of-range values, empty columns, suspicious text, and inconsistent numeric fields." /></div>
+      <div class="page" id="page-descriptive"><PagePlaceholder title="05 / DESCRIPTIVE STATISTICS" heading="Describe your study population" text="Generate n, %, mean, SD, median, IQR, range and a publication-style Table 1." /></div>
+      <div class="page" id="page-normality"><PagePlaceholder title="06 / NORMALITY" heading="Check distribution" text="Compare Shapiro–Wilk, skewness, histogram and Q–Q plot evidence." /></div>
+      <div class="page" id="page-categorical"><PagePlaceholder title="07 / CATEGORICAL ANALYSIS" heading="Compare categorical variables" text="Run chi-square or Fisher's exact test and calculate 2×2 odds ratio and risk ratio." /></div>
+      <div class="page" id="page-continuous"><PagePlaceholder title="08 / CONTINUOUS ANALYSIS" heading="Compare numeric outcomes" text="Run independent/paired t-test, Mann–Whitney, ANOVA or Kruskal–Wallis." /></div>
+      <div class="page" id="page-correlation"><PagePlaceholder title="09 / CORRELATION" heading="Measure association" text="Calculate Pearson or Spearman correlation with confidence interval and scatter plot." /></div>
+      <div class="page" id="page-linear"><PagePlaceholder title="10 / LINEAR REGRESSION" heading="Model a continuous outcome" text="Estimate adjusted coefficients, standard errors, 95% CI and model R²." /></div>
+      <div class="page" id="page-logistic"><PagePlaceholder title="11 / LOGISTIC REGRESSION" heading="Model a binary outcome" text="Estimate adjusted odds ratios with 95% CI using maximum-likelihood logistic regression." /></div>
+      <div class="page" id="page-poisson"><PagePlaceholder title="12 / POISSON / MODIFIED POISSON" heading="Model counts and prevalence ratios" text="Estimate rate/prevalence ratios with robust standard errors; useful for common binary outcomes." /></div>
+      <div class="page" id="page-survival"><PagePlaceholder title="13 / SURVIVAL ANALYSIS" heading="Time-to-event analysis" text="Create Kaplan–Meier curves and compare groups with a log-rank test." /></div>
+      <div class="page" id="page-diagnostic"><PagePlaceholder title="14 / DIAGNOSTIC ACCURACY" heading="Evaluate a diagnostic test" text="Calculate sensitivity, specificity, PPV, NPV, accuracy, likelihood ratios and ROC/AUC." /></div>
+      <div class="page" id="page-report"><PagePlaceholder title="15 / REPORT & EXPORT" heading="Turn results into a report" text="Export the current analysis results and dataset as HTML/CSV. Word/PDF can be printed from the browser." /></div>
+    </section>
+  </main>
+</div>
+
+<script>
+/* PagePlaceholder is replaced immediately by JS; kept in HTML to make the structure readable. */
+</script>
+<script src="app.js"></script>
+</body>
+</html>
